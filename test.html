@@ -1,0 +1,637 @@
+<html>
+	<head></head>
+	<body>
+
+		<input id="inptOrdre" type="text"  placeholder="entrez le nombre n"><button id="btValid">Valider</button>
+		<div>
+		<input type="button" id="posLigneBouleRouge1">
+		<input type="button" id="posColonneBouleRouge1">
+
+		<input type="button" id="posLigneBouleBleue1">
+		<input type="button" id="posColonneBouleBleue1">
+
+		<input type="button" id="modDirectionBouleRouge1">
+		<input type="button" id="modDirectionBouleBleue1">
+		<input type="button" id="sensBouleRouge1">
+		<input type="button" id="sensBouleBleue1">
+		<input type="button" id="orientBouleRouge1">
+		<input type="button" id="orientBouleBleue1">
+		<input type="button" id="debut" value="true">
+		<label>Nombre de collision:</label><input type="button" id='nbrCollisions' value="0">
+		</div>
+		<table id="billard">
+			
+			
+		</table>
+	</body>
+	<script src="jquery.js">
+
+	</script>
+	<script type="text/javascript">
+		function distance(boule1,boule2)
+		{
+			if((boule1 == 'b1') && (boule2 == "r1"))
+			{
+				var posColonneBouleRouge1 = parseInt($("#posColonneBouleRouge1").val())  ;
+				var posColonneBouleBleue1 = parseInt($("#posColonneBouleBleue1").val()) ;
+				var posLigneBouleRouge1 = parseInt($("#posLigneBouleRouge1").val()) ;
+				var posLigneBouleBleue1 = parseInt($('#posLigneBouleBleue1').val()) ;
+				if(posLigneBouleBleue1==posLigneBouleRouge1)
+				{
+					if(Math.abs(posColonneBouleRouge1- posColonneBouleBleue1)==1)
+					{
+						return 1 ;
+					}
+				}
+			}
+
+				
+			
+			return 10 ;
+		}
+		function run()
+		{
+
+			//console.log("il m appelle") ;
+			var n = $('#inptOrdre').val() ;
+			var finPartie = false ;
+			var nbrCollisions = parseInt($('#nbrCollisions').val()) ;
+			var contentRouge1 = '<div style="width:100%;border-radius: 20%;background:#ff0000">Rouge1</div>' ;
+			var contentBleue1 = '<div style="width:100%;border-radius: 20%;background:#0000ff">Bleue1</div>' ;
+			var posLigneBouleRouge1= parseInt($('#posLigneBouleRouge1').val())  ;
+			var posColonneBouleRouge1 = parseInt($('#posColonneBouleRouge1').val())  ;
+			var posLigneBouleBleue1=  parseInt( $('#posLigneBouleBleue1').val()) ;
+			var posColonneBouleBleue1 = parseInt($('#posColonneBouleBleue1').val())  ;
+			var modDirectionBouleBleue1 = $('#modDirectionBouleBleue1').val(),sensBouleBleue1 = $('#sensBouleBleue1').val() ;
+			var modDirectionBouleRouge1 = $('#modDirectionBouleRouge1').val(),sensBouleRouge1=$("#sensBouleRouge1").val() ;
+			var debut = $('#debut').val() ;
+			var collision = false,collisionParoiRouge1= false,collisionParoiBleue1=false ,collisionDiag = false ;
+			if(debut=='false')
+			{
+				if(modDirectionBouleRouge1=='horiz')
+				{
+					if(sensBouleRouge1=='gd')
+					{
+						if(modDirectionBouleBleue1=="horiz")
+						{
+							if(posLigneBouleRouge1==posLigneBouleBleue1)
+							{
+								if(Math.abs(posColonneBouleRouge1- posColonneBouleBleue1)==1)
+								{
+									collision = true ;
+									nbrCollisions++ ;
+								}
+							}
+						}
+						
+							//console.log("ancienne valeur" + posColonneBouleRouge1) ;
+						if(!collision)
+						{
+							posColonneBouleRouge1  = parseInt(posColonneBouleRouge1) + 1 ;
+						}
+						else
+						{
+							if(sensBouleRouge1 =='gd')
+							{
+								sensBouleRouge1 = 'dg' ;
+								orientBouleRouge1 = "haut" ;
+								
+								posColonneBouleRouge1 = parseInt(posColonneBouleRouge1) - 1 ;
+								posLigneBouleRouge1 = parseInt(posLigneBouleRouge1) - 1 ;
+							}
+							else
+							{
+								sensBouleRouge1 = 'gd' ;
+							}
+							modDirectionBouleRouge1='diag' ;
+
+						}
+							
+							//console.log("nouvelle valeur" + posColonneBouleRouge1) ;
+					}
+					else
+					{
+						posColonneBouleRouge1 = parseInt(posColonneBouleRouge1) - 1 ;
+					}
+						
+
+				}
+
+
+				else if(modDirectionBouleRouge1=='diag')
+				{
+					console.log('l orientation red 1 est:' + orientBouleRouge1) ;
+					console.log('le sens red 1 est:' + sensBouleRouge1) ;
+					if(sensBouleRouge1=='dg')
+					{
+						console.log('le sens rouge 1 est: droite gauche') ;
+
+						if(orientBouleRouge1=='haut')
+						{
+							console.log('l orientation rouge 1 est: haut') ;
+							if(distance('b1','r1')==1)
+							{
+								collisionDiag = true ;
+								nbrCollisions++ ;
+								sensBouleRouge1 = 'gd' ;
+								posColonneBouleRouge1 += 1 ;
+								posLigneBouleRouge1 -= 1 ;
+							}
+							if(!collisionDiag)
+							{
+								if(posColonneBouleRouge1 != 1)
+								{
+									if(posLigneBouleRouge1 != 1)// continuite de mouvement
+									{
+										posColonneBouleRouge1 = parseInt( posColonneBouleRouge1) - 1 ;
+										posLigneBouleRouge1 = parseInt( posLigneBouleRouge1) - 1 ;
+									}
+									else //if(posLigneBouleRouge1 == 1)
+									{
+										orientBouleRouge1 = 'bas' ;
+										//le sens ne change pas
+										posColonneBouleRouge1 = parseInt(posColonneBouleRouge1) - 1 ;
+										posLigneBouleRouge1 = parseInt(posLigneBouleRouge1) + 1 ;console.log(' apres changement le sens  redx 1 est:' + sensBouleRouge1) ;
+
+									}
+										
+								}
+								else
+								{
+									if(posLigneBouleRouge1 != 1)
+									{
+										//if((posLigneBouleRouge1 != 1) && (posLigneBouleRouge1 != n) )
+										
+											collisionParoiRouge1 = true ;
+
+											posColonneBouleRouge1 = parseInt(posColonneBouleRouge1) + 1 ;
+											posLigneBouleRouge1 = parseInt(posLigneBouleRouge1) - 1 ;
+											sensBouleRouge1  = 'gd' ;
+
+										
+									}
+									else //if(posLigneBouleRouge1 == 1)
+									{
+										posColonneBouleRouge1 = n ;
+										posLigneBouleRouge1 = n ;
+										finPartie = true ;
+										return ;
+									}
+
+								}
+							}
+								
+								
+						}
+						else //if(orientBouleRouge1=='bas') droite gauche vers le bas
+						{
+							console.log('l orientation rouge 1 est: bas') ;
+							if(distance('b1','r1')==1)
+							{
+								collisionDiag = true ;
+								nbrCollisions++ ;
+								sensBouleRouge1 = 'gd' ;
+								posColonneBouleRouge1 += 1 ;
+								posLigneBouleRouge1 += 1 ;
+							}
+							
+							if(!collisionDiag)
+							{
+								if((posColonneBouleRouge1 != n)  )
+								{
+									if(posColonneBouleRouge1 != 1)
+									{
+										if(posLigneBouleRouge1 != n)// continuite de mouvement
+										{
+											posColonneBouleRouge1 = parseInt(posColonneBouleRouge1) - 1 ;
+											posLigneBouleRouge1 = parseInt(posLigneBouleRouge1) + 1 ;
+										}
+										else // si on atteint la dernier ligne mais pas le coin
+										{
+											orientBouleRouge1 = 'haut' ;
+											// on ne change pas de sens
+											posColonneBouleRouge1 = parseInt(posColonneBouleRouge1) - 1 ;
+											posLigneBouleRouge1 = parseInt(posLigneBouleRouge1) - 1 ;
+										}
+									}
+									else
+									{
+										if(posLigneBouleRouge1 != n)
+										{
+											sensBouleRouge1 = 'gd' ;
+											posColonneBouleRouge1 += 1 ;
+											posLigneBouleRouge1 += 1 ;
+										}
+									}
+										
+								}
+							}
+
+								
+								
+
+						}
+					}
+					else //if(sensBouleRouge1 == 'gd')
+					{
+						if(orientBouleRouge1=='haut')
+						{
+
+
+							// if()
+							if(distance("b1","r1")==1)
+							{
+								collisionDiag = true ;
+								nbrCollisions++ ;
+								sensBouleRouge1 = 'dg' ;
+								posColonneBouleRouge1 = parseInt(posColonneBouleRouge1) - 1 ;
+								posLigneBouleRouge1 = parseInt(posLigneBouleRouge1) - 1 ;
+							}
+							if(!collisionDiag )
+							{
+								if(posLigneBouleRouge1 != 1)// continuite sans collision
+								{
+									if(posColonneBouleRouge1 != n)
+									{
+										posColonneBouleRouge1 = parseInt(posColonneBouleRouge1) + 1 ;
+										posLigneBouleRouge1 = parseInt(posLigneBouleRouge1) - 1 ;
+									}
+									else
+									{
+										sensBouleRouge1 = 'dg' ;
+										posColonneBouleRouge1 -= 1 ;
+										posLigneBouleRouge1 -= 1 ;
+									}
+										
+								}
+								else //if(posLigneBouleRouge1 == 1)
+								{
+									if(posColonneBouleRouge1 != 1)
+									{
+										orientBouleRouge1 = 'bas' ;
+										
+										posColonneBouleRouge1 = parseInt(posColonneBouleRouge1) + 1 ;
+										posLigneBouleRouge1 = parseInt(posLigneBouleRouge1) + 1 ;
+									}
+								}
+							}
+								
+						}
+						else// rouge1 de gauche à droite vers le bas
+						{
+							if(distance('b1','r1')==1)
+							{
+								collisionDiag = true ;
+								nbrCollisions++ ;
+								sensBouleRouge1 = 'dg' ;
+								posColonneBouleRouge1 -= 1 ;
+								posLigneBouleRouge1 += 1 ;
+
+							}
+							if(!collisionDiag)
+							{
+								if(posColonneBouleRouge1 != n)
+								{
+									if(posLigneBouleRouge1 != n) // continuite de mouvement
+									{
+										posColonneBouleRouge1 = parseInt(posColonneBouleRouge1) + 1 ;
+										posLigneBouleRouge1 = parseInt(posLigneBouleRouge1) + 1 ;
+									}
+									else
+									{
+										orientBouleRouge1 = 'haut' ;
+										posColonneBouleRouge1 += 1 ;
+										posLigneBouleRouge1 -= 1 ;
+									}
+								}
+								else  //if(posColonneBouleRouge1 == n)
+								{
+									if(posLigneBouleRouge1 != n) // continuite de mouvement
+									{
+										sensBouleRouge1 = 'dg' ;
+										// on ne change pas d orientation
+										posColonneBouleRouge1 = parseInt(posColonneBouleRouge1) - 1 ;
+										posLigneBouleRouge1 = parseInt(posLigneBouleRouge1) + 1 ;
+									}
+								}
+							}
+								
+						}
+					}
+
+
+				}
+
+
+				if(modDirectionBouleBleue1=='horiz')
+				{
+					if(!collision)
+					{
+						if(sensBouleBleue1=='dg')
+						{
+							posColonneBouleBleue1 = parseInt(posColonneBouleBleue1) - 1 ;
+						}
+						else
+						{
+							posColonneBouleBleue1 = parseInt(posColonneBouleBleue1) + 1 ;
+						}
+					}
+					else
+					{
+						if(sensBouleBleue1=='dg')
+						{
+							sensBouleBleue1 = 'gd' ;
+							orientBouleBleue1 = 'haut' ;
+							posColonneBouleBleue1 = parseInt(posColonneBouleBleue1) + 1 ;
+							posLigneBouleBleue1 = parseInt(posLigneBouleBleue1) - 1 ;
+						}
+						else
+						{
+							sensBouleBleue1 = 'dg' ;
+							posColonneBouleBleue1 = parseInt(posColonneBouleBleue1) - 1 ;
+							posLigneBouleBleue1 = parseInt(posLigneBouleBleue1) + 1 ;
+						}
+						modDirectionBouleBleue1 = 'diag' ;
+					}
+						
+					
+
+				}
+				else if(modDirectionBouleBleue1=='diag')
+				{
+
+					if(sensBouleBleue1=='gd')
+					{
+						if(orientBouleBleue1=='haut')
+						{
+							if(collisionDiag)
+							{
+								sensBouleBleue1 = 'dg' ;
+								posColonneBouleBleue1 -= 1 ;
+								posLigneBouleBleue1 -= 1 ;
+							}
+							else
+							{
+								if(   (posColonneBouleBleue1 != n)) // continuite de mouvement
+								{
+									//if(posColonneBouleBleue1 != 1)
+									//{
+										if(posLigneBouleBleue1 != 1)
+										{
+											posColonneBouleBleue1 = parseInt(posColonneBouleBleue1) + 1 ;
+											posLigneBouleBleue1 = parseInt(posLigneBouleBleue1 ) - 1 ;
+										}
+										else
+										{
+											posColonneBouleBleue1 += 1 ;
+											posLigneBouleBleue1 += 1 ;
+											orientBouleBleue1 = 'bas' ;
+										}
+											
+									//}
+										
+								}
+								else //if(posColonneBouleBleue1 == n)
+								{
+									if(posLigneBouleBleue1 != 1)
+									{
+										collisionParoiBleue1 = true ;
+										sensBouleBleue1 = 'dg' ;
+										posColonneBouleBleue1 = parseInt(posColonneBouleBleue1) - 1 ;
+										posLigneBouleBleue1 = parseInt(posLigneBouleBleue1) - 1 ;
+									}
+									else
+									{
+										posColonneBouleBleue1 = 1 ;
+										posLigneBouleBleue1 = n ;
+									}
+								}
+							}
+								
+						}
+						else // gauche droite vers le bas
+						{
+							if(collisionDiag)
+							{
+								sensBouleBleue1 = 'dg' ;
+								posColonneBouleBleue1 -= 1 ;
+								posLigneBouleBleue1 += 1 ;
+							}
+							else
+							{
+								if(posLigneBouleBleue1 != n)
+								{
+									if(posColonneBouleBleue1 != n)
+									{
+										posColonneBouleBleue1 = parseInt(posColonneBouleBleue1) + 1 ;
+										posLigneBouleBleue1 = parseInt(posLigneBouleBleue1) + 1 ;
+									}
+									else
+									{
+										sensBouleBleue1 = 'dg' ;
+										orientBouleBleue1 = 'bas' ;
+										posColonneBouleBleue1 -= 1 ;
+										posLigneBouleBleue1 += 1 ;
+									}
+								}
+								else
+								{
+									if(posColonneBouleBleue1 != n)
+									{
+										orientBouleBleue1 = 'haut' ;
+										posColonneBouleBleue1 = parseInt(posColonneBouleBleue1) + 1 ;
+										posLigneBouleBleue1 = parseInt(posLigneBouleBleue1) - 1 ;
+									}
+								}
+							}
+								
+						}
+					}
+					else if(sensBouleBleue1 == 'dg')
+					{
+						if(orientBouleBleue1=='haut')
+						{
+							if(collisionDiag)
+							{
+								sensBouleBleue1 = 'gd' ;
+								posColonneBouleBleue1= parseInt(posColonneBouleBleue1 ) + 1 ;
+								posLigneBouleBleue1 -= 1 ;
+							}
+							else
+							{
+								if((posColonneBouleBleue1 != 1) ) // continuite de mouvement
+								{
+									if (posLigneBouleBleue1 != 1)
+									{
+										posColonneBouleBleue1 = parseInt(posColonneBouleBleue1) - 1 ;
+										posLigneBouleBleue1 = parseInt(posLigneBouleBleue1) -  1 ;
+									}
+									else
+									{
+										// on ne change pas de sens
+										orientBouleBleue1 = 'bas' ;
+										posColonneBouleBleue1 = parseInt(posColonneBouleBleue1) - 1 ;
+										posLigneBouleBleue1 = parseInt(posLigneBouleBleue1) + 1 ;
+									}
+									
+								}
+								else
+								{
+									if (posLigneBouleBleue1 != 1)
+									{
+										sensBouleBleue1 = 'gd' ;
+										posColonneBouleBleue1 += 1 ;
+										posLigneBouleBleue1 -=  1 ;
+									}
+								}
+							}
+								
+						}
+						else// droite gauche vers le bas boule bleu1 bas
+						{
+							if(collisionDiag)
+							{
+								sensBouleBleue1 = 'gd' ;
+								posColonneBouleBleue1 += 1 ;
+								posLigneBouleBleue1 += 1 ;
+							}
+							else
+							{
+								if(posColonneBouleBleue1 != 1)
+								{
+									if(posLigneBouleBleue1 != n)
+									{
+										posColonneBouleBleue1 = parseInt(posColonneBouleBleue1) - 1 ;
+										posLigneBouleBleue1 = parseInt(posLigneBouleBleue1) + 1 ;
+									}
+									else
+									{
+										orientBouleBleue1 = 'haut' ;
+										posColonneBouleBleue1 -= 1 ;
+										posLigneBouleBleue1 -= 1 ;
+									}
+								}
+								else //if(posColonneBouleBleue1 == 1)
+								{
+									if(posLigneBouleBleue1 != n)
+									{
+										sensBouleBleue1 = 'gd' ;
+										// on ne change pas d orientation
+										posColonneBouleBleue1 = parseInt(posColonneBouleBleue1) + 1 ;
+										posLigneBouleBleue1 = parseInt(posLigneBouleBleue1) + 1 ;
+									}
+								}
+							}
+								
+						}
+						
+					}
+
+				}
+			}
+
+			
+					
+			$('#posLigneBouleRouge1').val(posLigneBouleRouge1) ;
+			$('#posColonneBouleRouge1').val(posColonneBouleRouge1) ;
+			$('#posLigneBouleBleue1').val(posLigneBouleBleue1) ;
+			$('#posColonneBouleBleue1').val(posColonneBouleBleue1) ;
+
+			$("#modDirectionBouleBleue1").val(modDirectionBouleBleue1) ;
+			$("#modDirectionBouleRouge1").val(modDirectionBouleRouge1) ;
+
+			$('#sensBouleBleue1').val(sensBouleBleue1) ;
+			$('#sensBouleRouge1').val(sensBouleRouge1) ;
+
+			$('td').html("") ;
+			$("#td_"  + posLigneBouleRouge1 
+				+ "_" + posColonneBouleRouge1).html(contentRouge1) ;
+			$("#td_"  + posLigneBouleBleue1 
+				+ "_" + posColonneBouleBleue1).html(contentBleue1) ;
+
+			//console.log("il m appelle" + "#td"  + posLigneBouleRouge1 
+				//+ "_" + posColonneBouleRouge1) ;
+			debut = "false" ;
+			$('#debut').val(debut) ;
+			$("#nbrCollisions").val(nbrCollisions) ;
+			setTimeout(run,500) ;
+		}
+
+
+		function move45(couleur,numBoule,ligne,colonne)
+		{
+
+		}
+		function mov90(couleur, numBoule,ligne,colonne)
+		{
+
+		}
+		function drawBillard(n)
+		{
+			var i=1,j=1,ligneContent , colonne ;
+			var content = '' ;
+			while(i<=n)
+			{
+				ligneContent = "<tr>" ;
+				j= 1 ;
+				while(j<=n)
+				{
+					ligneContent += '<td id="td_' + i + '_' + j + '" style="width: 50px;height:50px;border:2px solid black;"></td>' ;
+					j++ ;
+				}
+				ligneContent += '</tr>' ;
+				content+= ligneContent ;
+				i++ ;
+
+			}
+			$('#billard').html(content) ;
+
+		}
+		$(function(){
+			var n = $('#inptOrdre').val() ;
+			
+			$("#btValid").click(function(){
+				var nbrCollisions = 0 ;
+				var n = $('#inptOrdre').val() ;
+				var posLigneBouleRouge1 =n ;
+			var posColonneBouleRouge1 = 1 ;
+			var posLigneBouleRouge2 = n ;
+			var posColonneBouleRouge2  = n ;
+
+			var posLigneBouleBleue1 =n ;
+			var posColonneBouleBleue1 = n ;
+			var posLigneBouleBleue2 = n ;
+			var posColonneBouleBleue2  = n ;
+
+			var modDirectionBouleRouge1 = 'horiz' ;
+			var modDirectionBouleBleue1 = 'horiz' ;
+			var sensBouleRouge1 = 'gd';
+			var sensBouleBleue1 = "dg" ;
+
+			var orientBouleRouge1 = null ;
+			var orientBouleBleue1 = null ;
+
+			$('#posLigneBouleRouge1').val(posLigneBouleRouge1) ;
+			$('#posColonneBouleRouge1').val(posColonneBouleRouge1) ;
+			$('#posLigneBouleBleue1').val(posLigneBouleBleue1) ;
+			$('#posColonneBouleBleue1').val(posColonneBouleBleue1) ;
+
+			$("#modDirectionBouleBleue1").val(modDirectionBouleBleue1) ;
+			$("#modDirectionBouleRouge1").val(modDirectionBouleRouge1) ;
+
+			$('#sensBouleBleue1').val(sensBouleBleue1) ;
+			$('#sensBouleRouge1').val(sensBouleRouge1) ;
+
+			$('#orientBouleBleue1').val(orientBouleBleue1) ;
+			$('#orientBouleRouge1').val(orientBouleRouge1) ;
+			$("#nbrCollisions").val(nbrCollisions) ;
+				drawBillard(n) ;
+				//alert('voici la taille:' + n )
+				setTimeout(run,500) ;
+			})
+			
+		})
+
+
+	</script>
+</html>
